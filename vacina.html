@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caderneta da Vida — Vacinação em cada fase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Special+Elite&family=Libre+Franklin:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F1E9D2;
+    --paper-dark: #E4D8B4;
+    --paper-line: #C9BD98;
+    --ink: #26312C;
+    --ink-soft: #4B5750;
+    --teal: #1F5C52;
+    --stamp-red: #A63A2E;
+    --mustard: #B5791F;
+    --plum: #5B3A5C;
+    --accent: var(--teal);
+    --accent-soft: color-mix(in srgb, var(--accent) 14%, var(--paper));
+    --shadow: 0 1px 0 rgba(38,49,44,0.06);
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+  }
+
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.35), transparent 55%),
+      var(--paper);
+    color:var(--ink);
+    font-family:'Libre Franklin', sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* subtle paper grain */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    pointer-events:none;
+    opacity:0.5;
+    z-index:0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(38,49,44,0.02) 0px, rgba(38,49,44,0.02) 1px, transparent 1px, transparent 3px);
+  }
+
+  a{ color:inherit; }
+  :focus-visible{ outline:3px solid var(--stamp-red); outline-offset:2px; }
+
+  .wrap{ max-width:960px; margin:0 auto; padding:0 24px; position:relative; z-index:1; }
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    padding:64px 0 40px;
+    position:relative;
+  }
+  .eyebrow{
+    font-family:'Special Elite', monospace;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    font-size:12.5px;
+    color:var(--stamp-red);
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:26px; height:1px; background:var(--stamp-red);
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(2.3rem, 5vw, 3.4rem);
+    line-height:1.04;
+    margin:0 0 18px;
+    max-width:15ch;
+  }
+  h1 em{ font-style:italic; color:var(--teal); }
+  .hero p.lede{
+    font-size:1.08rem;
+    color:var(--ink-soft);
+    max-width:56ch;
+    margin:0 0 8px;
+  }
+  .hero-foot{
+    margin-top:28px;
+    display:flex;
+    gap:22px;
+    flex-wrap:wrap;
+    font-family:'Special Elite', monospace;
+    font-size:11.5px;
+    letter-spacing:0.04em;
+    color:var(--ink-soft);
+  }
+  .hero-foot span{ display:flex; align-items:center; gap:6px; }
+  .hero-foot .dot{ width:6px; height:6px; border-radius:50%; background:var(--teal); display:inline-block; }
+
+  /* ---------- BOOKLET TABS (index) ---------- */
+  nav.index{
+    position:sticky; top:0; z-index:20;
+    background:var(--paper);
+    border-bottom:1px solid var(--paper-line);
+    backdrop-filter:blur(2px);
+  }
+  nav.index .wrap{ padding:0 24px; }
+  .index-row{
+    display:flex;
+    overflow-x:auto;
+    scrollbar-width:none;
+    gap:0;
+  }
+  .index-row::-webkit-scrollbar{ display:none; }
+  .tab{
+    appearance:none;
+    background:transparent;
+    border:none;
+    border-bottom:4px solid transparent;
+    font-family:'Special Elite', monospace;
+    font-size:12.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    padding:16px 18px 12px;
+    cursor:pointer;
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  .tab .n{
+    font-family:'Fraunces', serif;
+    font-size:15px;
+    font-weight:700;
+    color:var(--ink);
+  }
+  .tab:hover{ color:var(--ink); }
+  .tab[aria-selected="true"]{
+    color:var(--ink);
+    border-bottom-color: var(--phase-color, var(--teal));
+  }
+
+  /* ---------- PHASE PAGE ---------- */
+  main{ padding:44px 0 90px; }
+  section.phase{ display:none; }
+  section.phase.active{ display:block; animation:reveal .35s ease; }
+  @keyframes reveal{ from{ opacity:0; transform:translateY(6px);} to{ opacity:1; transform:translateY(0);} }
+
+  .phase-head{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:20px;
+    flex-wrap:wrap;
+    border-bottom:1px dashed var(--paper-line);
+    padding-bottom:22px;
+    margin-bottom:34px;
+  }
+  .phase-head h2{
+    font-family:'Fraunces', serif;
+    font-size:clamp(1.7rem, 3.6vw, 2.3rem);
+    margin:0 0 6px;
+    color: var(--phase-color, var(--teal));
+  }
+  .phase-head p{ margin:0; color:var(--ink-soft); max-width:46ch; font-size:.98rem; }
+  .phase-badge{
+    font-family:'Special Elite', monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--paper);
+    background:var(--phase-color, var(--teal));
+    padding:6px 12px;
+    border-radius:2px;
+    white-space:nowrap;
+    transform:rotate(-1.5deg);
+  }
+
+  /* ---------- VACCINE CARDS ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:16px;
+  }
+  @media (max-width:680px){ .grid{ grid-template-columns:1fr; } }
+
+  .card{
+    position:relative;
+    background:var(--paper-dark);
+    border:1px solid var(--paper-line);
+    border-radius:3px;
+    padding:20px 20px 20px 88px;
+    min-height:118px;
+    box-shadow:var(--shadow);
+  }
+
+  .stamp{
+    position:absolute;
+    left:16px; top:18px;
+    width:58px; height:58px;
+    border-radius:50%;
+    border:2px solid var(--phase-color, var(--teal));
+    display:flex; align-items:center; justify-content:center;
+    color:var(--phase-color, var(--teal));
+    font-family:'Special Elite', monospace;
+    font-size:10px;
+    letter-spacing:.02em;
+    text-align:center;
+    transform:rotate(-8deg) scale(0.6);
+    opacity:0;
+    transition:transform .5s cubic-bezier(.2,1.4,.4,1), opacity .4s ease;
+  }
+  .stamp::before{
+    content:"";
+    position:absolute; inset:4px;
+    border:1px solid var(--phase-color, var(--teal));
+    border-radius:50%;
+    opacity:.55;
+  }
+  .card.in-view .stamp{ opacity:0.92; transform:rotate(-8deg) scale(1); }
+  .stamp .abbr{ font-family:'Fraunces', serif; font-weight:700; font-size:15px; line-height:1.1; }
+
+  .card h3{
+    font-family:'Fraunces', serif;
+    font-size:1.12rem;
+    margin:0 0 6px;
+  }
+  .card .protects{
+    font-size:.86rem;
+    color:var(--ink-soft);
+    margin:0 0 10px;
+    line-height:1.45;
+  }
+  .card .note{
+    font-family:'Special Elite', monospace;
+    font-size:11px;
+    letter-spacing:.02em;
+    color: var(--phase-color, var(--teal));
+    display:flex;
+    gap:7px;
+    align-items:flex-start;
+  }
+  .card .note::before{ content:"›"; font-weight:700; }
+
+  /* ---------- FOOTER CALLOUT ---------- */
+  .callout{
+    margin-top:56px;
+    padding:28px 26px;
+    background:var(--ink);
+    color:var(--paper);
+    border-radius:4px;
+    display:flex;
+    gap:20px;
+    align-items:center;
+    flex-wrap:wrap;
+    justify-content:space-between;
+  }
+  .callout .txt{ max-width:52ch; }
+  .callout .txt .eyebrow{ color:var(--mustard); }
+  .callout .txt h4{ font-family:'Fraunces', serif; font-size:1.3rem; margin:0 0 6px; }
+  .callout .txt p{ margin:0; color:#D8D2BE; font-size:.94rem; }
+  .callout .cta{
+    font-family:'Special Elite', monospace;
+    font-size:12px; letter-spacing:.06em; text-transform:uppercase;
+    background:var(--paper); color:var(--ink);
+    padding:12px 18px; border-radius:2px; white-space:nowrap;
+    border:1px solid var(--paper);
+  }
+
+  footer.site{
+    text-align:center;
+    padding:30px 24px 60px;
+    color:var(--ink-soft);
+    font-size:.82rem;
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Programa Nacional de Imunizações</div>
+    <h1>Uma dose certa<br>em <em>cada fase</em> da vida.</h1>
+    <p class="lede">A vacinação não termina na infância — ela acompanha a gente do primeiro dia de vida até a velhice. Escolha a fase abaixo e veja quais vacinas fazem parte dela e por que cada uma importa.</p>
+    <div class="hero-foot">
+      <span><span class="dot" style="background:var(--mustard)"></span>Infância</span>
+      <span><span class="dot" style="background:var(--teal)"></span>Adolescência</span>
+      <span><span class="dot" style="background:var(--stamp-red)"></span>Fase adulta</span>
+      <span><span class="dot" style="background:var(--plum)"></span>Pessoa idosa</span>
+    </div>
+  </div>
+</header>
+
+<nav class="index" aria-label="Fases da vida">
+  <div class="wrap">
+    <div class="index-row" role="tablist">
+      <button class="tab" role="tab" data-phase="infancia" style="--phase-color:#B5791F"><span class="n">01</span> Infância</button>
+      <button class="tab" role="tab" data-phase="adolescencia" style="--phase-color:#1F5C52"><span class="n">02</span> Adolescência</button>
+      <button class="tab" role="tab" data-phase="adulta" style="--phase-color:#A63A2E"><span class="n">03</span> Fase adulta</button>
+      <button class="tab" role="tab" data-phase="idoso" style="--phase-color:#5B3A5C"><span class="n">04</span> Pessoa idosa</button>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <section class="phase" id="infancia" style="--phase-color:#B5791F">
+    <div class="phase-head">
+      <div>
+        <h2>Infância</h2>
+        <p>A fase com o maior número de vacinas — é quando o organismo constrói suas primeiras defesas contra doenças graves.</p>
+      </div>
+      <span class="phase-badge">0 a 9 anos</span>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="stamp"><span class="abbr">BCG</span></div>
+        <h3>BCG</h3>
+        <p class="protects">Protege contra as formas graves da tuberculose, como a meníngea e a disseminada. Aplicada ainda na maternidade, em dose única, deixa uma pequena cicatriz no braço.</p>
+        <p class="note">Dose única, ao nascer</p>
+      </div>
+      <div class="card"><div class="stamp"><span class="abbr">Hep B</span></div>
+        <h3>Hepatite B</h3>
+        <p class="protects">Previne a infecção pelo vírus da hepatite B, que pode evoluir para doença crônica do fígado. A primeira dose deve ser dada o quanto antes após o nascimento.</p>
+        <p class="note">1ª dose ainda na maternidade</p>
+      </div>
+      <div class="card"><div class="stamp"><span class="abbr">Penta</span></div>
+        <h3>Pentavalente</h3>
+        <p class="protects">Vacina combinada que protege ao mesmo tempo contra difteria, tétano, coqueluche, Haemophilus influenzae tipo b e hepatite B.</p>
+        <p class="note">Esquema em múltiplas doses</p>
+      </div>
+      <div class="card"><div class="stamp"><span class="abbr">VIP<br>VOP</span></div>
+        <h3>Poliomielite</h3>
+        <p class="protects">Protege contra o poliovírus, causador da paralisia infantil — uma doença que já foi eliminada do Brasil graças à vacinação em massa.</p>
+        <p class="note">Doses injetável e oral, conforme idade</p>
+      </div>
+      <div class="card"><div class="stamp"><span class="abbr">Rota</span></div>
+        <h3>Rotavírus</h3>
+        <p class="protects">Reduz o risco das formas graves de diarreia e desidratação causadas pelo rotavírus, uma das principais causas de internação infantil.</p>
+        <p class="note">Via oral, nos primeiros meses</p>
+      </div>
+      <div class="card"><div class="stamp"><span class="abbr">Pneumo</span></div>
+        <h3>Pneumocócica</h3>
+        <p class="protects">Protege contra o pneumococo, bactéria que pode causar pneumonia, meningite e otite grave em crianças pequenas.</p>
+        <p class="note">Esquema em múltiplas doses + reforço</p>
+      </div>
+      <div class="card"><div class="stamp"><span class="abbr">Meningo<br>C</span></div>
+        <h3>Meningocócica</h3>
+        <p class="protects">Reduz o risco de meningite e outras infecções graves causadas pelo meningococo, doença que evolui rapidamente e exige atenção imediata.</p>
+        <p class="note">Doses + reforço na infância</p>
+      </div>
+      <div class="card"><div class="stamp"><span class="abbr">SCR</span></div>
+        <h3>Tríplice viral (SCR)</h3>
+        <p class="protects">Protege contra sarampo, caxumba e rubéola — três doenças virais altamente contagiosas, com a manutenção da imunidade coletiva sendo essencial para evitar surtos.</p>
+        <p class="note">1ª dose a partir de 1 ano</p>
+      </div>
+      <div class="card"><div class="stamp"><span class="abbr">Vari<br>cela</span></div>
+        <h3>Varicela</h3>
+        <p class="protects">Previne a catapora, doença que, apesar de parecer leve, pode causar complicações como infecções de pele e pneumonia.</p>
+        <p class="note">Geralmente combinada à tríplice viral</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="phase" id="adolescencia" style="--phase-color:#1F5C52">
+    <div class="phase-head">
+      <div>
+        <h2>Adolescência</h2>
+        <p>Momento de reforçar imunidades da infância e incluir proteções específicas para essa fase da vida.</p>
+      </div>
+      <span class="phase-badge">10 a 19 anos</span>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="stamp"><span class="abbr">HPV</span></div>
+        <h3>HPV</h3>
+        <p class="protects">Protege contra os tipos de HPV mais associados ao câncer de colo do útero e a outros tumores, além de verrugas genitais. Recomendada para meninas e meninos.</p>
+        <p class="note">Esquema recomendado nesta faixa etária</p>
+      </div>
+      <div class="card"><div class="stamp"><span class="abbr">Meningo<br>ACWY</span></div>
+        <h3>Meningocócica ACWY</h3>
+        <p class="protects">Amplia a proteção contra a meningite meningocócica para os sorogrupos A, C, W e Y, reforçando a imunidade da infância.</p>
+        <p class="note">Dose de reforço na adolescência</p>
+      </div>
+      <div class="card"><div class="stamp"><span class="abbr">dT</span></div>
+        <h3>dT (difteria e tétano)</h3>
+        <p class="protects">Mantém a proteção contra difteria e tétano, doenças que ainda circulam e cuja imunidade precisa de reforços periódicos ao longo da vida.</p>
+        <p class="note">Reforço a cada 10 anos</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="phase" id="adulta" style="--phase-color:#A63A2E">
+    <div class="phase-head">
+      <div>
+        <h2>Fase adulta</h2>
+        <p>Hora de conferir a caderneta: completar esquemas que ficaram para trás e manter os reforços em dia.</p>
+      </div>
+      <span class="phase-badge">20 a 59 anos</span>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="stamp"><span class="abbr">Hep B</span></div>
+        <h3>Hepatite B</h3>
+        <p class="protects">Indicada para quem não completou o esquema na infância ou adolescência. Proteger-se na vida adulta ainda é possível e recomendado.</p>
+        <p class="note">Para esquema incompleto ou ausente</p>
+      </div>
+      <div class="card"><div class="stamp"><span class="abbr">dT</span></div>
+        <h3>dT (difteria e tétano)</h3>
+        <p class="protects">O reforço contra difteria e tétano deve continuar sendo feito ao longo da vida adulta, especialmente importante em caso de ferimentos.</p>
+        <p class="note">Reforço a cada 10 anos</p>
+      </div>
+      <div class="card"><div class="stamp"><span class="abbr">FA</span></div>
+        <h3>Febre amarela</h3>
+        <p class="protects">Protege contra a febre amarela, doença grave transmitida por mosquitos, com recomendação especial para quem vive ou viaja para áreas de risco.</p>
+        <p class="note">Dose única para a maioria das pessoas</p>
+      </div>
+      <div class="card"><div class="stamp"><span class="abbr">SCR</span></div>
+        <h3>Tríplice viral (SCR)</h3>
+        <p class="protects">Adultos que não têm comprovação de doses anteriores devem completar o esquema contra sarampo, caxumba e rubéola, doenças que voltaram a circular em surtos recentes.</p>
+        <p class="note">Para quem não tem doses comprovadas</p>
+      </div>
+      <div class="card"><div class="stamp"><span class="abbr">Flu</span></div>
+        <h3>Influenza</h3>
+        <p class="protects">A vacina anual contra a gripe reduz o risco de formas graves da doença, sendo indicada especialmente para gestantes e pessoas com condições de risco.</p>
+        <p class="note">Dose anual, campanhas sazonais</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="phase" id="idoso" style="--phase-color:#5B3A5C">
+    <div class="phase-head">
+      <div>
+        <h2>Pessoa idosa</h2>
+        <p>O sistema imunológico se torna mais vulnerável com a idade, e algumas vacinas ganham prioridade nessa fase.</p>
+      </div>
+      <span class="phase-badge">60 anos ou mais</span>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="stamp"><span class="abbr">Flu</span></div>
+        <h3>Influenza</h3>
+        <p class="protects">Reduz o risco de complicações graves da gripe, que tendem a ser mais frequentes e sérias em pessoas idosas.</p>
+        <p class="note">Dose anual, grupo prioritário</p>
+      </div>
+      <div class="card"><div class="stamp"><span class="abbr">Pneumo</span></div>
+        <h3>Pneumocócica</h3>
+        <p class="protects">Protege contra o pneumococo, importante causa de pneumonia grave em pessoas idosas, especialmente as institucionalizadas.</p>
+        <p class="note">Esquema específico para a idade</p>
+      </div>
+      <div class="card"><div class="stamp"><span class="abbr">Herpes<br>Zóster</span></div>
+        <h3>Herpes-zóster</h3>
+        <p class="protects">Reduz o risco da reativação do vírus da catapora em forma de "cobreiro", condição dolorosa e mais comum a partir dos 50-60 anos.</p>
+        <p class="note">Indicada a partir dos 60 anos</p>
+      </div>
+      <div class="card"><div class="stamp"><span class="abbr">dT</span></div>
+        <h3>dT (difteria e tétano)</h3>
+        <p class="protects">Os reforços contra difteria e tétano continuam necessários também na terceira idade, mantendo a proteção ao longo de toda a vida.</p>
+        <p class="note">Reforço a cada 10 anos</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="callout">
+    <div class="txt">
+      <div class="eyebrow">Antes de tomar qualquer vacina</div>
+      <h4>Confira a sua caderneta com um profissional de saúde</h4>
+      <p>Idades, intervalos e doses variam conforme o histórico vacinal de cada pessoa. Procure a Unidade Básica de Saúde (UBS) mais próxima para atualizar sua carteira de vacinação.</p>
+    </div>
+    <div class="cta">Localizar posto de saúde</div>
+  </div>
+
+</main>
+
+<footer class="site">
+  Conteúdo educativo e informativo — não substitui orientação médica individual.
+</footer>
+
+<script>
+  const tabs = document.querySelectorAll('.tab');
+  const sections = document.querySelectorAll('.phase');
+
+  function activate(phase){
+    tabs.forEach(t => t.setAttribute('aria-selected', t.dataset.phase === phase ? 'true' : 'false'));
+    sections.forEach(s => s.classList.toggle('active', s.id === phase));
+    const activeSection = document.getElementById(phase);
+    if(activeSection){
+      activeSection.querySelectorAll('.card').forEach(c => c.classList.remove('in-view'));
+      requestAnimationFrame(() => observeCards(activeSection));
+    }
+  }
+
+  tabs.forEach(t => t.addEventListener('click', () => activate(t.dataset.phase)));
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in-view'); io.unobserve(e.target); } });
+  }, { threshold: 0.3 });
+
+  function observeCards(section){
+    section.querySelectorAll('.card').forEach((c, i) => {
+      setTimeout(() => io.observe(c), i * 40);
+    });
+  }
+
+  activate('infancia');
+</script>
+
+</body>
+</html>
