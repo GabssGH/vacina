@@ -29,14 +29,17 @@
   const findBtn = document.getElementById('find-ubs');
   if(findBtn){
     findBtn.addEventListener('click', () => {
-      const openMaps = (query) => {
-        window.open('https://www.google.com/maps/search/' + encodeURIComponent(query), '_blank', 'noopener');
-      };
+      const mapsUrl = (query) => 'https://www.google.com/maps/search/' + encodeURIComponent(query);
  
       if(!('geolocation' in navigator)){
-        openMaps('posto de saúde perto de mim');
+        window.open(mapsUrl('posto de saúde perto de mim'), '_blank', 'noopener');
         return;
       }
+ 
+      // Abre a aba já no clique (gesto do usuário), antes do await da geolocalização —
+      // celulares bloqueiam window.open() se ele acontecer depois de uma resposta assíncrona.
+      const mapsTab = window.open('', '_blank', 'noopener');
+      if(mapsTab){ mapsTab.document.title = 'Localizando…'; }
  
       findBtn.dataset.loading = 'true';
       const originalText = findBtn.textContent;
@@ -45,13 +48,17 @@
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           const { latitude, longitude } = pos.coords;
-          openMaps(`posto de saúde perto de ${latitude},${longitude}`);
+          const url = mapsUrl(`posto de saúde perto de ${latitude},${longitude}`);
+          if(mapsTab && !mapsTab.closed){ mapsTab.location.href = url; }
+          else { window.location.href = url; }
           findBtn.textContent = originalText;
           delete findBtn.dataset.loading;
         },
         () => {
           // permissão negada ou indisponível: cai para busca genérica por proximidade do navegador
-          openMaps('posto de saúde perto de mim');
+          const url = mapsUrl('posto de saúde perto de mim');
+          if(mapsTab && !mapsTab.closed){ mapsTab.location.href = url; }
+          else { window.location.href = url; }
           findBtn.textContent = originalText;
           delete findBtn.dataset.loading;
         },
