@@ -26,43 +26,29 @@
   activate('infancia');
  
   // Localizar posto de saúde (UBS) mais próximo, via geolocalização do navegador
-  const findBtn = document.getElementById('find-ubs');
-  if(findBtn){
-    findBtn.addEventListener('click', () => {
-      const mapsUrl = (query) => 'https://www.google.com/maps/search/' + encodeURIComponent(query);
- 
-      if(!('geolocation' in navigator)){
-        window.open(mapsUrl('posto de saúde perto de mim'), '_blank', 'noopener');
-        return;
-      }
- 
-      // Abre a aba já no clique (gesto do usuário), antes do await da geolocalização —
-      // celulares bloqueiam window.open() se ele acontecer depois de uma resposta assíncrona.
-      const mapsTab = window.open('', '_blank', 'noopener');
-      if(mapsTab){ mapsTab.document.title = 'Localizando…'; }
- 
-      findBtn.dataset.loading = 'true';
-      const originalText = findBtn.textContent;
-      findBtn.textContent = 'Localizando…';
- 
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const { latitude, longitude } = pos.coords;
-          const url = mapsUrl(`posto de saúde perto de ${latitude},${longitude}`);
-          if(mapsTab && !mapsTab.closed){ mapsTab.location.href = url; }
-          else { window.location.href = url; }
-          findBtn.textContent = originalText;
-          delete findBtn.dataset.loading;
-        },
-        () => {
-          // permissão negada ou indisponível: cai para busca genérica por proximidade do navegador
-          const url = mapsUrl('posto de saúde perto de mim');
-          if(mapsTab && !mapsTab.closed){ mapsTab.location.href = url; }
-          else { window.location.href = url; }
-          findBtn.textContent = originalText;
-          delete findBtn.dataset.loading;
-        },
-        { timeout: 8000 }
-      );
-    });
-  }
+const findBtn = document.getElementById('find-ubs');
+if(findBtn){
+  findBtn.addEventListener('click', () => {
+    const mapsUrl = (query) => 'https://www.google.com/maps/search/' + encodeURIComponent(query);
+
+    if(!('geolocation' in navigator)){
+      window.location.href = mapsUrl('posto de saúde perto de mim');
+      return;
+    }
+
+    findBtn.dataset.loading = 'true';
+    const originalText = findBtn.textContent;
+    findBtn.textContent = 'Localizando…';
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        window.location.href = mapsUrl(`posto de saúde perto de ${latitude},${longitude}`);
+      },
+      () => {
+        window.location.href = mapsUrl('posto de saúde perto de mim');
+      },
+      { timeout: 8000 }
+    );
+  });
+}
