@@ -239,10 +239,10 @@
   .card-body p{ color:var(--text-soft); font-size:.88rem; padding-top:14px; border-top:1px solid var(--glass-border); margin-top:14px; }
 
   /* ---------------- QUIZ (recomendação personalizada) ---------------- */
-  section.quiz{ padding:64px 0 20px; }
+  section.quiz{ padding:64px 0 20px; --phase:var(--violet); }
   .quiz-head{ max-width:620px; margin:0 auto 32px; text-align:center; }
-  .quiz-head .eyebrow{ justify-content:center; color:var(--violet); }
-  .quiz-head .eyebrow::before{ background:var(--violet); }
+  .quiz-head .eyebrow{ justify-content:center; color:var(--phase); }
+  .quiz-head .eyebrow::before{ background:var(--phase); }
   .quiz-head h2{ font-family:'Space Grotesk', sans-serif; font-size:clamp(1.6rem,3vw,2.2rem); margin:10px 0 10px; }
   .quiz-head p{ color:var(--text-soft); font-size:.98rem; }
 
@@ -254,7 +254,7 @@
 
   .quiz-progress{ display:flex; gap:8px; justify-content:center; margin-bottom:28px; }
   .quiz-progress .dot{ width:28px; height:4px; border-radius:99px; background:var(--glass-border); transition:background .3s ease; }
-  .quiz-progress .dot.active{ background:var(--violet); }
+  .quiz-progress .dot.active{ background:var(--phase); }
   .quiz-progress .dot.done{ background:var(--teal); }
 
   .q-label{ display:block; font-family:'Space Grotesk', sans-serif; font-size:1rem; margin-bottom:10px; }
@@ -264,7 +264,18 @@
     padding:14px 16px; color:var(--text); font-family:'Plus Jakarta Sans', sans-serif; font-size:1.05rem;
     outline:none; transition:border-color .2s ease;
   }
-  .q-input:focus{ border-color:var(--violet); }
+  .q-input:focus{ border-color:var(--phase); }
+
+  /* Setas do campo numérico com o mesmo visual escuro da página (Chrome/Safari/Edge) */
+  .q-input::-webkit-inner-spin-button,
+  .q-input::-webkit-outer-spin-button{
+    opacity:1;
+    filter:invert(85%) sepia(6%) saturate(300%) hue-rotate(190deg) brightness(1.1);
+    cursor:pointer;
+  }
+  /* Firefox: remove as setas nativas (não são estilizáveis) e mantém só o campo */
+  .q-input[type="number"]{ -moz-appearance:textfield; }
+
   .q-error{ color:var(--coral); font-size:.82rem; font-family:'JetBrains Mono', monospace; margin-top:8px; display:none; }
   .q-error.show{ display:block; }
 
@@ -274,7 +285,7 @@
     background:rgba(255,255,255,0.03); color:var(--text-soft); font-family:'Space Grotesk', sans-serif; font-weight:600;
     cursor:pointer; transition:all .2s ease;
   }
-  .q-toggle-btn[aria-pressed="true"]{ border-color:var(--violet); color:var(--text); background:color-mix(in srgb, var(--violet) 16%, transparent); }
+  .q-toggle-btn[aria-pressed="true"]{ border-color:var(--phase); color:var(--text); background:color-mix(in srgb, var(--phase) 16%, transparent); }
 
   .q-next, .q-back{
     font-family:'JetBrains Mono', monospace; font-size:12.5px; letter-spacing:.05em; text-transform:uppercase;
@@ -294,7 +305,7 @@
     background:rgba(255,255,255,0.02); cursor:pointer; font-size:.86rem;
     transition:border-color .2s ease, background .2s ease;
   }
-  .q-check input{ accent-color:var(--violet); width:16px; height:16px; flex-shrink:0; }
+  .q-check input{ accent-color:var(--phase); width:16px; height:16px; flex-shrink:0; }
   .q-check:has(input:checked){ border-color:var(--teal); background:color-mix(in srgb, var(--teal) 10%, transparent); }
 
   .quiz-result-head{ display:flex; justify-content:center; margin-bottom:18px; }
@@ -312,7 +323,7 @@
   .q-result-item .q-result-top{ display:flex; align-items:center; gap:10px; }
   .q-result-item .ico{
     width:30px; height:30px; flex-shrink:0; border-radius:9px;
-    background:color-mix(in srgb, var(--violet) 18%, transparent); color:var(--violet);
+    background:color-mix(in srgb, var(--phase) 18%, transparent); color:var(--phase);
     display:flex; align-items:center; justify-content:center;
   }
   .q-result-item h4{ font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:.94rem; }
