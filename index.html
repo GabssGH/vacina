@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./style.css">
 <script src="https://unpkg.com/lucide@latest"></script>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -92,7 +92,7 @@
 
     <div class="quiz-step" data-step="1">
       <label class="q-label" for="quiz-age">Qual a sua idade?</label>
-      <input type="number" id="quiz-age" min="0" max="120" placeholder="Ex: 28" class="q-input">
+      <input type="number" id="quiz-age" min="0" max="120" maxlength="3" placeholder="Ex: 28" class="q-input">
       <div class="q-error" id="quiz-age-error">Informe uma idade válida para continuar.</div>
 
       <label class="q-label" style="margin-top:22px;">Você está gestante no momento?</label>
@@ -141,6 +141,9 @@
   Conteúdo educativo e informativo — não substitui orientação médica individual.
   <div class="made">caderneta-da-vida · feito com HTML, CSS e JS</div>
 </footer>
+
+</body>
+</html>
     <div id="root"></div>
     <script type="module" src="./script.js"></script>
     <div id="root"></div>
