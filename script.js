@@ -169,23 +169,23 @@
   // ===================================================================
   const AGE_GROUPS = [
     {
-      id:'bebes', label:'Recém-nascidos e lactentes', range:'0 a 2 anos', min:0, max:2,
+      id:'bebes', label:'Recém-nascidos e lactentes', range:'0 a 2 anos', min:0, max:2, color:'#34D8C4',
       vaccines:['BCG','Hepatite A','Hepatite B','Pentavalente','Hexavalente','Poliomielite (VIP)','Poliomielite (VOP)','Rotavírus','Pneumocócica 10','Pneumocócica 13','Pneumocócica 15','Meningocócica B','Meningocócica C','Meningocócica ACWY','Tríplice viral (SCR)','Tetraviral','Varicela','Influenza','Febre amarela','COVID-19']
     },
     {
-      id:'infancia2', label:'Infância', range:'3 a 10 anos', min:3, max:10,
+      id:'infancia2', label:'Infância', range:'3 a 10 anos', min:3, max:10, color:'#34D8C4',
       vaccines:['Influenza','COVID-19','Varicela','Tríplice viral (SCR)','dT (difteria e tétano)','DTP (difteria, tétano e coqueluche)','Febre amarela','Hepatite A','Hepatite B','Pneumocócica','Meningocócica']
     },
     {
-      id:'adolescencia2', label:'Adolescência', range:'11 a 19 anos', min:11, max:19,
+      id:'adolescencia2', label:'Adolescência', range:'11 a 19 anos', min:11, max:19, color:'#8B6BFF',
       vaccines:['HPV','Meningocócica ACWY','Meningocócica B','dT','dTpa','Hepatite A','Hepatite B','Tríplice viral (SCR)','Varicela','Influenza','Febre amarela','COVID-19','Dengue']
     },
     {
-      id:'adultos2', label:'Adultos', range:'20 a 59 anos', min:20, max:59,
+      id:'adultos2', label:'Adultos', range:'20 a 59 anos', min:20, max:59, color:'#FF6F8F',
       vaccines:['dT','dTpa','Hepatite A','Hepatite B','Influenza','COVID-19','Febre amarela','Tríplice viral (SCR)','Varicela','Dengue','HPV','Pneumocócica','Herpes-zóster','Meningocócica']
     },
     {
-      id:'idosos2', label:'Idosos', range:'60 anos ou mais', min:60, max:130,
+      id:'idosos2', label:'Idosos', range:'60 anos ou mais', min:60, max:130, color:'#FFC15E',
       vaccines:['Influenza','COVID-19','Pneumocócica','Herpes-zóster','dT','dTpa','Hepatite A','Hepatite B','Febre amarela','Tríplice viral (SCR)','Varicela','Meningocócica','Dengue']
     },
   ];
@@ -289,6 +289,11 @@
     });
   });
 
+  // Garante o limite de 3 dígitos no campo de idade (maxlength não é confiável em type="number")
+  document.getElementById('quiz-age').addEventListener('input', (e) => {
+    if(e.target.value.length > 3){ e.target.value = e.target.value.slice(0, 3); }
+  });
+
   document.getElementById('quiz-next-1').addEventListener('click', () => {
     const ageInput = document.getElementById('quiz-age');
     const age = Number(ageInput.value);
@@ -299,6 +304,7 @@
     }
     errorEl.classList.remove('show');
     quizGroup = findAgeGroup(age);
+    if(quizGroup){ document.getElementById('quiz').style.setProperty('--phase', quizGroup.color); }
     buildQuizChecklist();
     goToQuizStep(2);
   });
